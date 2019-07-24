@@ -665,7 +665,7 @@ Example (colored grass block):
         description = "Dirt with Grass",
         -- Regular tiles, as usual
         -- The dirt tile disables palette coloring
-        tiles = {{name = "default_grass.png"}, 
+        tiles = {{name = "default_grass.png"},
             {name = "default_dirt.png", color = "white"}},
         -- Overlay tiles: define them in the same style
         -- The top and bottom tile does not have overlay
@@ -2276,11 +2276,11 @@ Helper functions
                 avg_jitter = 0.03,         -- average packet time jitter
                 connection_uptime = 200,   -- seconds since client connected
                 protocol_version = 32,     -- protocol version used by client
-                ser_vers = 26,             -- serialization version used by client
+                serialization_version = 26,             -- serialization version used by client
                 major = 0,                 -- major version number
                 minor = 4,                 -- minor version number
                 patch = 10,                -- patch version number
-                vers_string = "0.4.9-git", -- full version string
+                version_string = "0.4.9-git", -- full version string
                 state = "Active"           -- current client state
             }
 * `minetest.mkdir(path)`: returns success.
@@ -4829,4 +4829,3 @@ The Biome API is still in an experimental phase and subject to change.
         record_login = func(name),
     --  ^ Called when player joins, used for keeping track of last_login
     }
-
