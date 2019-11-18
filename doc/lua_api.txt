@@ -3822,14 +3822,12 @@ Utilities
           connection_uptime = 200,   -- seconds since client connected
           protocol_version = 32,     -- protocol version used by client
           formspec_version = 2,      -- supported formspec version
-          -- following information is available on debug build only!!!
-          -- DO NOT USE IN MODS
-          --ser_vers = 26,             -- serialization version used by client
-          --major = 0,                 -- major version number
-          --minor = 4,                 -- minor version number
-          --patch = 10,                -- patch version number
-          --vers_string = "0.4.9-git", -- full version string
-          --state = "Active"           -- current client state
+          serialization_version = 26,             -- serialization version used by client
+          major = 0,                 -- major version number
+          minor = 4,                 -- minor version number
+          patch = 10,                -- patch version number
+          vers_string = "0.4.9-git", -- full version string
+          state = "Active"           -- current client state
       }
 
 * `minetest.mkdir(path)`: returns success.

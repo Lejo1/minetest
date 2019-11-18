@@ -237,7 +237,6 @@ int ModApiServer::l_get_player_information(lua_State *L)
 	lua_pushnumber(L, player->formspec_version);
 	lua_settable(L, table);
 
-#ifndef NDEBUG
 	lua_pushstring(L,"serialization_version");
 	lua_pushnumber(L, ser_vers);
 	lua_settable(L, table);
@@ -261,7 +260,6 @@ int ModApiServer::l_get_player_information(lua_State *L)
 	lua_pushstring(L,"state");
 	lua_pushstring(L,ClientInterface::state2Name(state).c_str());
 	lua_settable(L, table);
-#endif
 
 #undef ERET
 	return 1;
