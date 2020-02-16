@@ -63,8 +63,16 @@ local function get_formspec(tabview, name, tabdata)
 				fgettext("Del. Favorite") .. "]"
 		end
 		if fav_selected.description then
-			retval = retval .. "textarea[8.1,2.3;4.23,2.9;;;" ..
-				core.formspec_escape((gamedata.serverdescription or ""), true) .. "]"
+			local description = core.formspec_escape((gamedata.serverdescription or ""), true)
+			if fav_selected.clients_list then
+				description = description .. "\n" .. fgettext("Player") .. "(" ..
+				#gamedata.clients_list..")\n" .. core.formspec_escape(table.concat(gamedata.clients_list, " "))
+			end
+			if fav_selected.mods then
+				description = description .. "\n" .. fgettext("Mods") .. "(" ..
+				#gamedata.mods..")\n" .. core.formspec_escape(table.concat(gamedata.mods, " "))
+			end
+			retval = retval .. "textarea[8.1,2.3;4.23,2.9;;;" .. description .. "]"
 		end
 	end
 
@@ -163,6 +171,8 @@ local function main_button_handler(tabview, fields, name, tabdata)
 
 				gamedata.servername        = fav.name
 				gamedata.serverdescription = fav.description
+				gamedata.clients_list      = fav.clients_list
+				gamedata.mods              = fav.mods
 
 				if gamedata.address and gamedata.port then
 					core.settings:set("address", gamedata.address)
@@ -180,6 +190,8 @@ local function main_button_handler(tabview, fields, name, tabdata)
 				local address = fav.address
 				local port    = fav.port
 				gamedata.serverdescription = fav.description
+				gamedata.clients_list      = fav.clients_list
+				gamedata.mods              = fav.mods
 
 				for i = 1, #favs do
 					if fav.address == favs[i].address and
@@ -220,6 +232,8 @@ local function main_button_handler(tabview, fields, name, tabdata)
 		local address = fav.address
 		local port    = fav.port
 		gamedata.serverdescription = fav.description
+		gamedata.clients_list      = fav.clients_list
+		gamedata.mods              = fav.mods
 		if address and port then
 			core.settings:set("address", address)
 			core.settings:set("remote_port", port)
@@ -299,6 +313,8 @@ local function main_button_handler(tabview, fields, name, tabdata)
 			core.settings:set("address",     first_server.address)
 			core.settings:set("remote_port", first_server.port)
 			gamedata.serverdescription = first_server.description
+			gamedata.clients_list      = first_server.clients_list
+			gamedata.mods              = first_server.mods
 		end
 		return true
 	end
@@ -324,6 +340,8 @@ local function main_button_handler(tabview, fields, name, tabdata)
 
 			gamedata.servername        = fav.name
 			gamedata.serverdescription = fav.description
+			gamedata.clients_list      = fav.clients_list
+			gamedata.mods              = fav.mods
 
 			if menudata.favorites_is_public and
 					not is_server_protocol_compat_or_error(
