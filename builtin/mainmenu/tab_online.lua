@@ -65,11 +65,11 @@ local function get_formspec(tabview, name, tabdata)
 		if fav_selected.description then
 			local description = core.formspec_escape((gamedata.serverdescription or ""), true)
 			if fav_selected.clients_list then
-				description = description .. "\n" .. fgettext("Player") .. "(" ..
+				description = description .. "\n\n" .. fgettext("Player") .. "(" ..
 				#gamedata.clients_list..")\n" .. core.formspec_escape(table.concat(gamedata.clients_list, " "))
 			end
 			if fav_selected.mods then
-				description = description .. "\n" .. fgettext("Mods") .. "(" ..
+				description = description .. "\n\n" .. fgettext("Mods") .. "(" ..
 				#gamedata.mods..")\n" .. core.formspec_escape(table.concat(gamedata.mods, " "))
 			end
 			retval = retval .. "textarea[8.1,2.3;4.23,2.9;;;" .. description .. "]"
