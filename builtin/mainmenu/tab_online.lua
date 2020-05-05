@@ -52,7 +52,7 @@ local function get_formspec(tabview, name, tabdata)
 		"pwdfield[10.73,1.85;1.77,0.5;te_pwd;]" ..
 
 		-- Description Background
-		"box[7.73,2.25;4.25,2.6;#999999]"..
+		"box[7.73,2.25;4.25,1.95;#999999]"..
 
 		-- Connect
 		"button[9.88,4.9;2.3,1;btn_mp_connect;" .. fgettext("Connect") .. "]"
@@ -63,10 +63,15 @@ local function get_formspec(tabview, name, tabdata)
 				fgettext("Del. Favorite") .. "]"
 		end
 		if fav_selected.description then
-			retval = retval .. "textarea[8.1,2.3;4.23,2.9;;;" ..
+			retval = retval .. "textarea[8.1,2.3;4.23,2.25;;;" ..
 				core.formspec_escape((gamedata.serverdescription or ""), true) .. "]"
 		end
+		if fav_selected.mods or fav_selected.clients_list then
+			retval = retval .. "button[7.73,4.2;4.45,1;btn_mods_list;" ..
+				fgettext("Show Players/Mods") .. "]"
+		end
 	end
+
 
 	--favourites
 	retval = retval .. "tablecolumns[" ..
@@ -132,6 +137,42 @@ local function get_formspec(tabview, name, tabdata)
 	return retval
 end
 
+local function players_mods_formspec(dialogdata)
+	local retval =
+    "size[6,8]" ..
+    "textlist[3.1,0.7;2.7,6.5;dlg_mods;" ..
+    table.concat(dialogdata.mods or {"No Player-List"}, ",") .. "]" ..
+    "textlist[0.2,0.7;2.7,6.5;dlg_player;" ..
+    table.concat(dialogdata.players or {"No Mod-List"}, ",") .. "]" ..
+    "label[1.1,0.2;Players]" ..
+    "label[4.2,0.2;Mods]" ..
+    "button[0.2,12.7;2.8,-11.7;dlg_back;" ..
+    fgettext("Back to Serverlist") .. "]"
+
+	return retval
+end
+
+local function players_mods_buttonhandler(this, fields)
+	if fields["dlg_back"] then
+		this:delete()
+		return true
+	end
+
+	return false
+end
+
+local function show_player_mods_dlg(tabview, players, mods)
+	local dlg = dialog_create("dlg_player_mods",
+					players_mods_formspec,
+					players_mods_buttonhandler,
+					nil)
+  dlg.data.players = players
+  dlg.data.mods = mods
+	dlg:set_parent(tabview)
+	tabview:hide()
+	dlg:show()
+end
+
 --------------------------------------------------------------------------------
 local function main_button_handler(tabview, fields, name, tabdata)
 	local serverlist = menudata.search_result or menudata.favorites
@@ -164,6 +205,8 @@ local function main_button_handler(tabview, fields, name, tabdata)
 
 				gamedata.servername        = fav.name
 				gamedata.serverdescription = fav.description
+				gamedata.clients_list      = fav.clients_list
+				gamedata.mods              = fav.mods
 
 				if gamedata.address and gamedata.port then
 					core.settings:set("address", gamedata.address)
@@ -181,6 +224,8 @@ local function main_button_handler(tabview, fields, name, tabdata)
 				local address = fav.address
 				local port    = fav.port
 				gamedata.serverdescription = fav.description
+				gamedata.clients_list      = fav.clients_list
+				gamedata.mods              = fav.mods
 
 				for i = 1, #favs do
 					if fav.address == favs[i].address and
@@ -221,6 +266,8 @@ local function main_button_handler(tabview, fields, name, tabdata)
 		local address = fav.address
 		local port    = fav.port
 		gamedata.serverdescription = fav.description
+		gamedata.clients_list      = fav.clients_list
+		gamedata.mods              = fav.mods
 		if address and port then
 			core.settings:set("address", address)
 			core.settings:set("remote_port", port)
@@ -300,6 +347,8 @@ local function main_button_handler(tabview, fields, name, tabdata)
 			core.settings:set("address",     first_server.address)
 			core.settings:set("remote_port", first_server.port)
 			gamedata.serverdescription = first_server.description
+			gamedata.clients_list      = first_server.clients_list
+			gamedata.mods              = first_server.mods
 		end
 		return true
 	end
@@ -325,6 +374,8 @@ local function main_button_handler(tabview, fields, name, tabdata)
 
 			gamedata.servername        = fav.name
 			gamedata.serverdescription = fav.description
+			gamedata.clients_list      = fav.clients_list
+			gamedata.mods              = fav.mods
 
 			if menudata.favorites_is_public and
 					not is_server_protocol_compat_or_error(
@@ -340,6 +391,11 @@ local function main_button_handler(tabview, fields, name, tabdata)
 		core.settings:set("remote_port", fields.te_port)
 
 		core.start()
+		return true
+	end
+
+	if fields.btn_mods_list then
+		show_player_mods_dlg(tabview, gamedata.clients_list, gamedata.mods)
 		return true
 	end
 	return false
